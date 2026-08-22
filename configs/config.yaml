@@ -1,0 +1,35 @@
+shared:
+  window_size: 3.0    # Duration of each bird call to be fed to CNN in seconds
+  sr: 44100           # Sample rate in Hz. How many audio samples are captured per second.
+                      # Must match the sample rate you record/train at everywhere
+
+  hop_size: 1.0       # Hop between overlapping segements in seconds
+
+spec_config:
+  low_hz: 300.0       # Bandpass filter: frequencies BELOW this are removed.
+  high_hz: 8200       # Bandpass filter: frequencies ABOVE this are removed.
+                      # Together these keep only the 500Hz-6000Hz band where
+                      # penguin calls live, and discard low rumble (wind/waves)
+                      # and high-frequency content that isn't relevant.
+
+  filter_order: 4     # "Order" of the bandpass filter. Roughly: higher order
+                      # = sharper cutoff at the edges of the band, but more
+                      # computation. 4 is a common, safe default.
+
+  n_fft: 1024         # FFT window size (in samples) used to compute the
+                      # spectrogram. Bigger n_fft = more detail in frequency,
+                      # less detail in time. 1024 is a reasonable default
+                      # for this kind of audio.
+
+  hop_length: 512     # How many samples to move forward between each FFT
+                      # window. Smaller hop = more overlap = smoother/more
+                      # detailed spectrogram in time, but more computation.
+                      # 512 = half of n_fft, a common choice.
+
+  n_mels: 64          # Number of mel bands (rows) in the output spectrogram.
+                      # This is the "height" of the image-like input your
+                      # model will see. More mels = finer frequency detail,
+                      # but a bigger input to the model.
+
+audio_config:
+  

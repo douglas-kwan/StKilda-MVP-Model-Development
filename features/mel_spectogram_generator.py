@@ -8,9 +8,9 @@ from pathlib import Path
 class MelSpectrogramGen:
 
     def __init__(self, 
-                 sr: int = 44100,
-                 low_hz: float = 500.0,
-                 high_hz: float = 6000.0,
+                 sr: int = 24000,
+                 low_hz: float = 300.0,
+                 high_hz: float = 8200.0,
                  filter_order: int = 4,
                  n_fft: int = 1024,
                  hop_length: int = 512,
@@ -187,7 +187,7 @@ class MelSpectrogramGen:
             order, 
             [low_hz / nyq, high_hz / nyq],
             btype = "band", # Type of filter (bandpass, highpass, lowpass, etc...)
-            output = "sos" 
+            output = "sos" # sos is the output format used for general filtering
         )
     
     def _build_mel_filterbank(self, fmin: float, fmax: float) -> np.ndarray:
@@ -203,6 +203,9 @@ class MelSpectrogramGen:
         though both are "100Hz apart". The mel scale reshapes frequency
         to better match that perceptual spacing, which tends to help
         models learn more efficiently from audio.
+ 
+        You build this ONCE (it never depends on the actual audio, only
+        on the settings), then reuse it for every spectrogram.
 
         Args:
             fmin (float): Minimum allowed frequency used by bandpass filter
@@ -251,7 +254,7 @@ class MelSpectrogramGen:
     @staticmethod
     def _hz_to_mel(f):
         """Converts a frequency in Hz to the 'mel' perceptual scale."""
-        # HTK mel formula
+        # The "HTK" mel formula
         return 2595.0 * np.log10(1.0 + f / 700.0)
  
     @staticmethod

@@ -1,9 +1,7 @@
 shared:
   window_size: 3.0    # Duration of each bird call to be fed to CNN in seconds
-  sr: 44100           # Sample rate in Hz. How many audio samples are captured per second.
+  sr: 24000           # Sample rate in Hz. How many audio samples are captured per second.
                       # Must match the sample rate you record/train at everywhere
-
-  hop_size: 1.0       # Hop between overlapping segements in seconds
 
 spec_config:
   low_hz: 300.0       # Bandpass filter: frequencies BELOW this are removed.
@@ -16,12 +14,12 @@ spec_config:
                       # = sharper cutoff at the edges of the band, but more
                       # computation. 4 is a common, safe default.
 
-  n_fft: 1024         # FFT window size (in samples) used to compute the
+  n_fft: 512         # FFT window size (in samples) used to compute the
                       # spectrogram. Bigger n_fft = more detail in frequency,
                       # less detail in time. 1024 is a reasonable default
                       # for this kind of audio.
 
-  hop_length: 512     # How many samples to move forward between each FFT
+  hop_length: 256     # How many samples to move forward between each FFT
                       # window. Smaller hop = more overlap = smoother/more
                       # detailed spectrogram in time, but more computation.
                       # 512 = half of n_fft, a common choice.
@@ -32,4 +30,13 @@ spec_config:
                       # but a bigger input to the model.
 
 audio_config:
-  
+  hop_size: 2.0           # Hop between overlapping segements in seconds
+  clip_pad_max_ratio: 0.9 # Ratio relative to window size as to the maximum
+                          # amount of silence that can be padded at the start
+                          # and end of the call. This MUST be greater than 0.5
+                          # because of random clipping logic
+spec_aug_config:
+  time_mask_param: 10
+  freq_mask_param: 4
+  n_freq_masks: 2
+  n_time_masks: 3
